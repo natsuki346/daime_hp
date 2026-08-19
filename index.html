@@ -1,367 +1,409 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DaiMe — 同じ経験をした人と、話せる場所</title>
-  <meta name="description" content="Come onを押した瞬間に、同じ経験を先に生きた人が届く。" />
-  <meta property="og:title" content="DaiMe — 同じ経験をした人と、話せる場所" />
-  <meta property="og:description" content="Come onを押した瞬間に、同じ経験を先に生きた人が届く。" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@300;400;700&display=swap" rel="stylesheet" />
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-    const firebaseConfig = {
-      apiKey: "AIzaSyBFn0ossPONSQL0Q86xBaiG36ESI850UL0",
-      authDomain: "daime-a07ca.firebaseapp.com",
-      projectId: "daime-a07ca",
-      storageBucket: "daime-a07ca.firebasestorage.app",
-      messagingSenderId: "1078310000086",
-      appId: "1:1078310000086:web:3124e52ed4eb6143b88077",
-      measurementId: "G-WL5G0VHX6J"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const analytics = getAnalytics(app);
-    logEvent(analytics, 'page_view');
-    window.submitEmail = async function(inputId, formRowId, successId, errorId) {
-      const input = document.getElementById(inputId);
-      const email = input.value.trim();
-      const errorEl = document.getElementById(errorId);
-      const formRow = document.getElementById(formRowId);
-      const successEl = document.getElementById(successId);
-      errorEl.style.display = 'none';
-      input.style.borderColor = '';
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        errorEl.style.display = 'block';
-        input.style.borderColor = '#e05a3a';
-        return;
-      }
-      try {
-        await addDoc(collection(db, "waitlist"), {
-          email, lang: document.documentElement.lang || 'ja',
-          createdAt: serverTimestamp(), ua: navigator.userAgent
-        });
-        logEvent(analytics, 'waitlist_signup');
-        formRow.style.display = 'none';
-        successEl.style.display = 'block';
-      } catch(e) {
-        errorEl.textContent = 'エラーが発生しました。もう一度お試しください。';
-        errorEl.style.display = 'block';
-      }
-    };
-  </script>
-  <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    :root{
-      --cream:#F5F0E8;
-      --cream2:#EDE9DF;
-      --yellow:#F5D45E;
-      --yellow2:#E8C43A;
-      --red:#C0503A;
-      --text:#2a2520;
-      --text2:#5a5248;
-      --text3:#9a9188;
-      --border:rgba(42,37,32,0.1);
-    }
-    html{scroll-behavior:smooth;}
-    body{font-family:'Noto Sans JP',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>あなたの就活の話を聞かせてください</title>
+<meta name="description" content="就活を終えた方に、その経験を聞かせてもらうための協力依頼です。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F7F8F4;
+  --grid:rgba(22,35,58,.055);
+  --ink:#16233A;
+  --ink-2:#4A5772;
+  --ink-3:#8B93A5;
+  --line:rgba(22,35,58,.13);
+  --marker:#FFE86B;
+  --teal:#2E6B5B;
+  --mint-1:#EAF2EC;
+  --mint-2:#DBE8E1;
+  --serif:"Klee One",serif;
+  --sans:"Zen Kaku Gothic New",system-ui,sans-serif;
+  --mono:"Space Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.95;
+  letter-spacing:.02em;
+}
+.wrap{max-width:700px;margin:0 auto;padding:0 22px}
 
-    .lang-bar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:flex-end;gap:4px;padding:10px 20px;background:rgba(245,240,232,0.85);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border);}
-    .lang-btn{background:none;border:0.5px solid var(--border);border-radius:100px;padding:4px 12px;font-size:12px;font-family:'Noto Sans JP',sans-serif;color:var(--text2);cursor:pointer;transition:all .2s;}
-    .lang-btn:hover,.lang-btn.active{background:var(--yellow);border-color:var(--yellow);color:var(--text);}
+.label{
+  font-family:var(--mono);
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-3);display:flex;align-items:center;gap:12px;margin:0 0 24px;
+}
+.label::after{content:"";flex:1;height:1px;background:var(--line)}
+h2{
+  font-family:var(--serif);font-weight:600;
+  font-size:clamp(21px,5vw,28px);line-height:1.65;
+  margin:0 0 22px;letter-spacing:.01em;
+}
+p{margin:0 0 1.3em}
+p:last-child{margin-bottom:0}
+section{padding:68px 0;border-top:1px solid var(--line)}
 
-    /* ── HERO with full-bleed video ── */
-    .hero{position:relative;width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:6rem 1.5rem 4rem;overflow:hidden;}
-    .hero-video{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);min-width:100%;min-height:100%;width:auto;height:auto;object-fit:cover;z-index:0;}
-    .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(to bottom,rgba(245,240,232,0.55) 0%,rgba(245,240,232,0.72) 55%,rgba(245,240,232,0.95) 88%,var(--cream) 100%);}
-    .hero-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:100%;}
+/* 蛍光ペン */
+.mk{
+  background-image:linear-gradient(var(--marker),var(--marker));
+  background-repeat:no-repeat;
+  background-position:0 84%;
+  background-size:0% .62em;
+  transition:background-size .75s cubic-bezier(.22,.61,.36,1);
+  padding:0 .06em;
+}
+.mk.in{background-size:100% .62em}
 
-    .app-name{font-family:'Noto Serif JP',serif;font-size:13px;font-weight:300;letter-spacing:.35em;color:var(--text2);margin-bottom:2rem;animation:fadeUp .6s ease forwards .2s;opacity:0;}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-    .hero-headline{font-family:'Noto Serif JP',serif;font-size:clamp(1.9rem,6vw,3.4rem);font-weight:300;line-height:1.55;margin-bottom:1.1rem;animation:fadeUp .7s ease forwards .4s;opacity:0;}
-    .hero-headline em{font-style:normal;color:var(--red);}
-    .hero-sub{font-size:clamp(.92rem,2.2vw,1.08rem);font-weight:300;color:var(--text2);line-height:1.95;margin-bottom:2.75rem;max-width:430px;animation:fadeUp .7s ease forwards .6s;opacity:0;}
+/* ヒーロー */
+.hero{padding:72px 0 64px;border-top:none}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  color:var(--teal);margin:0 0 22px;
+}
+h1{
+  font-family:var(--serif);font-weight:600;
+  font-size:clamp(26px,6.6vw,42px);
+  line-height:1.62;margin:0 0 20px;letter-spacing:.005em;
+}
+.sub{
+  font-size:clamp(14px,3.7vw,16px);color:var(--ink-2);
+  margin:0 0 34px;letter-spacing:.03em;line-height:1.9;
+}
+.facts{display:flex;flex-wrap:wrap;border:1px solid var(--line);background:rgba(255,255,255,.6)}
+.fact{flex:1 1 33%;min-width:104px;padding:15px 12px;border-right:1px solid var(--line)}
+.fact:last-child{border-right:none}
+.fact b{display:block;font-family:var(--mono);font-size:17px;font-weight:700;letter-spacing:0;margin-bottom:2px}
+.fact span{font-size:11.5px;color:var(--ink-3);letter-spacing:.06em;line-height:1.5;display:block}
+.hero-note{
+  font-family:var(--serif);font-size:clamp(15px,4vw,17px);line-height:2;
+  margin:26px 0 0;
+}
 
-    .form-wrap{width:100%;max-width:440px;animation:fadeUp .7s ease forwards .8s;opacity:0;}
-    .form-wrap-s{width:100%;max-width:440px;margin:0 auto;}
-    .free-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--red);background:rgba(192,80,58,0.09);border:0.5px solid rgba(192,80,58,0.22);border-radius:100px;padding:4px 14px;margin-bottom:12px;}
-    .form-row{display:flex;gap:8px;}
-    .email-input{flex:1;height:52px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:0 1rem;font-size:14px;font-family:'Noto Sans JP',sans-serif;color:var(--text);outline:none;transition:border-color .2s;}
-    .email-input::placeholder{color:var(--text3);}
-    .email-input:focus{border-color:var(--yellow2);}
-    .cta-btn{height:52px;padding:0 1.4rem;background:var(--yellow);border:none;border-radius:10px;font-size:14px;font-weight:500;font-family:'Noto Sans JP',sans-serif;color:var(--text);cursor:pointer;white-space:nowrap;transition:background .2s,transform .1s;}
-    .cta-btn:hover{background:var(--yellow2);}
-    .cta-btn:active{transform:scale(.98);}
-    .error-msg{display:none;font-size:12px;color:#c0392b;margin-top:6px;}
-    .success-msg{display:none;background:rgba(245,212,94,.25);border:1px solid rgba(245,212,94,.6);border-radius:10px;padding:16px;font-size:14px;color:#7a5a00;text-align:center;line-height:1.7;}
-    .form-note{font-size:11px;color:var(--text3);margin-top:10px;text-align:center;}
+.body-text{font-size:clamp(15px,3.9vw,16.5px)}
+.body-text.serif{font-family:var(--serif);line-height:2.05;font-size:clamp(15.5px,4vw,17px)}
 
-    /* ── STEPS (vertical) ── */
-    .steps-section{padding:7rem 1.5rem;background:var(--cream2);}
-    .steps-header{text-align:center;margin-bottom:5rem;}
-    .section-label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:1rem;}
-    .steps-title{font-family:'Noto Serif JP',serif;font-size:clamp(1.4rem,4vw,2.1rem);font-weight:300;line-height:1.75;}
-    .steps-title strong{color:var(--red);font-weight:400;}
+/* チャットのモック */
+.mock{
+  margin:6px 0 14px;
+  border:1px solid rgba(22,35,58,.1);
+  border-radius:18px;
+  background:linear-gradient(165deg,var(--mint-1),var(--mint-2));
+  padding:18px 16px 14px;
+  box-shadow:0 18px 40px -28px rgba(22,35,58,.55);
+  overflow:hidden;
+}
+.mock-top{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+.mock-dot{width:7px;height:7px;border-radius:50%;background:rgba(22,35,58,.16)}
+.mock-top span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:rgba(22,35,58,.4);margin-left:4px}
+.q{
+  margin-left:auto;max-width:86%;width:fit-content;
+  background:var(--teal);color:#fff;
+  padding:11px 15px;border-radius:15px 15px 4px 15px;
+  font-size:14px;line-height:1.75;
+  opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s;
+}
+.q.show{opacity:1;transform:none}
+.a-wrap{margin-top:16px;max-width:92%;opacity:0;transition:opacity .35s}
+.a-wrap.show{opacity:1}
+.a-who{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.a-avatar{
+  width:22px;height:22px;border-radius:50%;
+  background:#fff;border:1px solid rgba(22,35,58,.12);
+  display:grid;place-items:center;font-size:10px;color:var(--teal);font-weight:700;
+  font-family:var(--mono);
+}
+.a-who b{font-size:11.5px;font-weight:500;color:var(--ink-2);letter-spacing:.04em}
+.a{
+  background:#fff;border-radius:4px 15px 15px 15px;
+  padding:13px 15px;font-size:14px;line-height:1.95;color:var(--ink);
+  min-height:3em;
+}
+.caret{display:inline-block;width:2px;height:1em;background:var(--teal);vertical-align:-2px;margin-left:1px;animation:blink 1s steps(1) infinite}
+.caret.off{display:none}
+@keyframes blink{50%{opacity:0}}
+.dots{display:inline-flex;gap:4px;padding:3px 0}
+.dots i{width:5px;height:5px;border-radius:50%;background:rgba(22,35,58,.25);animation:bob 1.1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}
+.dots i:nth-child(3){animation-delay:.3s}
+@keyframes bob{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:.9;transform:translateY(-3px)}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chip{
+  font-size:10.5px;letter-spacing:.04em;color:var(--ink-2);
+  background:rgba(255,255,255,.75);border:1px solid rgba(22,35,58,.09);
+  border-radius:999px;padding:3px 9px;
+  opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s;
+}
+.chip.show{opacity:1;transform:none}
+.mock-input{
+  margin-top:22px;background:rgba(255,255,255,.78);
+  border:1px solid rgba(22,35,58,.08);border-radius:14px;
+  padding:11px 12px;display:flex;align-items:center;gap:8px;
+}
+.mock-input .ph{font-size:12.5px;color:rgba(22,35,58,.35);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{font-size:10.5px;color:var(--ink-2);border:1px solid rgba(22,35,58,.12);border-radius:999px;padding:3px 9px;white-space:nowrap}
+.send{width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-size:12px;flex-shrink:0}
+.mock-cap{font-size:12px;color:var(--ink-3);margin:0 0 34px;line-height:1.8}
 
-    .step{display:flex;align-items:center;justify-content:center;gap:4.5rem;max-width:900px;margin:0 auto 6rem;flex-wrap:wrap;}
-    .step:last-child{margin-bottom:0;}
-    .step.reverse{flex-direction:row-reverse;}
-    .step-text{flex:1;min-width:270px;max-width:400px;}
-    .step-num{display:inline-block;font-size:11px;letter-spacing:.18em;font-weight:500;color:var(--yellow2);border:0.5px solid rgba(232,196,58,.5);border-radius:100px;padding:3px 12px;margin-bottom:1rem;}
-    .step-headline{font-family:'Noto Serif JP',serif;font-size:clamp(1.25rem,3vw,1.7rem);font-weight:300;line-height:1.75;margin-bottom:1.1rem;}
-    .step-headline strong{color:var(--red);font-weight:400;}
-    .step-body{font-size:14px;color:var(--text2);line-height:2;}
+/* 8段階 */
+.flow{margin:26px 0 0;padding:0;list-style:none}
+.phase{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--teal);
+  margin:26px 0 8px;padding-left:2px;
+}
+.phase:first-child{margin-top:0}
+.step{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.step .no{font-family:var(--mono);font-size:12px;color:var(--ink-3);padding-top:3px;flex-shrink:0;width:22px}
+.step h3{margin:0 0 2px;font-size:15px;font-weight:700;letter-spacing:.03em;line-height:1.6}
+.step p{margin:0;font-size:12.5px;color:var(--ink-2);line-height:1.75}
+.tail{font-size:13px;color:var(--ink-2);margin-top:22px;line-height:1.9}
 
-    .phone-frame{width:230px;flex-shrink:0;background:#161616;border-radius:38px;padding:12px;box-shadow:0 40px 90px rgba(0,0,0,.2),0 0 0 1px rgba(0,0,0,.1);position:relative;}
-    .phone-notch{position:absolute;top:24px;left:50%;transform:translateX(-50%);width:70px;height:20px;background:#161616;border-radius:12px;z-index:2;}
-    .phone-screen{width:100%;border-radius:28px;overflow:hidden;display:block;background:#f0ece4;}
-    .phone-screen img{width:100%;display:block;}
+/* 最後に */
+.last{background:rgba(255,255,255,.55)}
+.last .body-text{font-family:var(--serif);font-size:clamp(16px,4.3vw,19px);line-height:2}
+footer{height:56px}
 
-    /* ── WHAT ── */
-    .what-section{padding:7rem 1.5rem;max-width:700px;margin:0 auto;text-align:center;}
-    .what-headline{font-family:'Noto Serif JP',serif;font-size:clamp(1.3rem,3.5vw,1.85rem);font-weight:300;line-height:1.9;margin-bottom:3rem;}
-    .what-headline strong{color:var(--red);font-weight:400;}
-    .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;}
-    .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.75rem 1.5rem;text-align:left;}
-    .card-icon{font-size:1.7rem;margin-bottom:12px;display:block;}
-    .card-title{font-size:14px;font-weight:500;margin-bottom:8px;}
-    .card-body{font-size:13px;color:var(--text2);line-height:1.8;}
-
-    /* ── VISION ── */
-    .vision-section{padding:7rem 1.5rem;text-align:center;background:var(--text);}
-    .vision-text{font-family:'Noto Serif JP',serif;font-size:clamp(1.2rem,3.5vw,1.9rem);font-weight:300;line-height:2.05;color:rgba(245,240,232,.42);}
-    .vision-text em{font-style:normal;color:var(--yellow);}
-
-    /* ── FOOTER CTA ── */
-    .footer-cta{padding:7rem 1.5rem;text-align:center;}
-    .footer-cta h2{font-family:'Noto Serif JP',serif;font-size:clamp(1.2rem,3.5vw,1.65rem);font-weight:300;line-height:1.85;margin-bottom:2rem;}
-    footer{border-top:1px solid var(--border);padding:1.75rem;text-align:center;font-size:11px;color:var(--text3);}
-
-    /* i18n */
-    [data-lang]{display:none;}span[data-lang]{display:none;}
-    .lang-ja [data-lang="ja"],.lang-en [data-lang="en"],.lang-zh [data-lang="zh"],.lang-ko [data-lang="ko"]{display:block;}
-    .lang-ja span[data-lang="ja"],.lang-en span[data-lang="en"],.lang-zh span[data-lang="zh"],.lang-ko span[data-lang="ko"]{display:inline;}
-
-    @media(max-width:760px){
-      .step,.step.reverse{flex-direction:column;gap:2.5rem;margin-bottom:4.5rem;}
-      .step-text{text-align:center;max-width:100%;}
-      .phone-frame{width:200px;}
-      .form-row{flex-direction:column;}
-      .steps-header{margin-bottom:3.5rem;}
-    }
-  </style>
+.rv{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none}
+  .mk{background-size:100% .62em}
+  .q,.a-wrap,.chip{opacity:1;transform:none}
+}
+@media(min-width:700px){
+  body{font-size:16.5px}
+  .wrap{padding:0 32px}
+  section{padding:88px 0}
+  .hero{padding:100px 0 80px}
+}
+</style>
 </head>
-<body class="lang-ja">
+<body>
 
-<nav class="lang-bar">
-  <button class="lang-btn active" onclick="setLang('ja',this)">日本語</button>
-  <button class="lang-btn" onclick="setLang('en',this)">English</button>
-  <button class="lang-btn" onclick="setLang('zh',this)">中文</button>
-  <button class="lang-btn" onclick="setLang('ko',this)">한국어</button>
-</nav>
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow rv">就活を終えたあなたへのお願い</p>
+    <h1 class="rv">あなたの経験と学びが、<br><span class="mk">次の人へ渡っていく</span>。<br>その最初の一員になってください。</h1>
+    <p class="sub rv">去年のあなたが聞きたかった話を、今、誰かが探しています。</p>
+    <div class="facts rv">
+      <div class="fact"><b>60</b><span>質問の数（およそ）</span></div>
+      <div class="fact"><b>1–2h</b><span>所要時間</span></div>
+      <div class="fact"><b>なし</b><span>謝礼</span></div>
+    </div>
+    <p class="hero-note rv">謝礼は出せません。申し訳ないです。<br>それでも、経験した人からしか出てこない話を、次の人に渡していける形にしようとしています。力を貸してください。</p>
+  </div>
+</header>
 
-<!-- HERO -->
-<section class="hero">
-  <video class="hero-video" autoplay muted loop playsinline>
-    <source src="assets/hero.mp4" type="video/mp4" />
-  </video>
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <p class="app-name">DaiMe</p>
-    <h1 class="hero-headline">
-      <span data-lang="ja">同じ経験をした人は、<br><em>思っているより、すぐ近くにいる。</em></span>
-      <span data-lang="en">Someone who's lived it too<br><em>is closer than you think.</em></span>
-      <span data-lang="zh">有过同样经历的人，<br><em>比你想的还要近。</em></span>
-      <span data-lang="ko">같은 경험을 한 사람은,<br><em>생각보다 훨씬 가까이 있습니다.</em></span>
-    </h1>
-    <p class="hero-sub">
-      <span data-lang="ja">Come onを押した瞬間に、<br>同じ経験を先に生きた人が届く。</span>
-      <span data-lang="en">The moment you press Come on,<br>someone who lived through it reaches you.</span>
-      <span data-lang="zh">按下 Come on 的瞬间，有过同样经历的人就会出现。</span>
-      <span data-lang="ko">Come on를 누르는 순간, 같은 경험을 먼저 살아낸 사람이 찾아옵니다.</span>
-    </p>
-    <div class="form-wrap">
-      <div class="free-tag">🌼
-        <span data-lang="ja">無料で使えます</span>
-        <span data-lang="en">Free to use</span>
-        <span data-lang="zh">免费使用</span>
-        <span data-lang="ko">무료로 사용 가능</span>
+<!-- ============ 1. なぜ声をかけたか ============ -->
+<section>
+  <div class="wrap">
+    <p class="label rv">はじめに</p>
+    <h2 class="rv">全員に声をかけているわけでは、ありません。</h2>
+    <div class="body-text serif">
+      <p class="rv">どこに内定したかは関係ありません。<span class="mk">自分の就活に真摯に取り組んだ</span>と判断した人にだけ、この依頼を送っています。</p>
+      <p class="rv">うまくいかなかった話でも構いません。深く考えないまま進んでしまった部分こそ、別の誰かにとってのヒントになります。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. つくっているもの ============ -->
+<section>
+  <div class="wrap">
+    <p class="label rv">つくっているもの</p>
+    <h2 class="rv">就活の悩みに、同じ道を通った人の話がそのまま返ってくるもの。</h2>
+
+    <div class="mock rv" id="mock">
+      <div class="mock-top" aria-hidden="true">
+        <i class="mock-dot"></i><i class="mock-dot"></i><i class="mock-dot"></i>
+        <span>DEMO</span>
       </div>
-      <div class="form-row" id="formRow1">
-        <input type="email" class="email-input" id="emailInput1" placeholder="your@email.com" />
-        <button class="cta-btn" onclick="submitEmail('emailInput1','formRow1','success1','error1')">
-          <span data-lang="ja">待機リストに参加</span>
-          <span data-lang="en">Join Waitlist</span>
-          <span data-lang="zh">加入候补名单</span>
-          <span data-lang="ko">대기 목록 참가</span>
-        </button>
+      <div class="q" id="q"></div>
+      <div class="a-wrap" id="aWrap">
+        <div class="a-who">
+          <div class="a-avatar" id="avatar">K</div>
+          <b id="who">経験者の回答</b>
+        </div>
+        <div class="a" id="a"></div>
+        <div class="chips" id="chips"></div>
       </div>
-      <p class="error-msg" id="error1">
-        <span data-lang="ja">メールアドレスを入力してください</span>
-        <span data-lang="en">Please enter a valid email</span>
-        <span data-lang="zh">请输入有效的邮箱地址</span>
-        <span data-lang="ko">이메일 주소를 입력해 주세요</span>
-      </p>
-      <div class="success-msg" id="success1">
-        <span data-lang="ja">ありがとう。あなたの席を取っておきます 🌼</span>
-        <span data-lang="en">Thank you. We'll save your spot 🌼</span>
-        <span data-lang="zh">谢谢你。我们为你保留了一个位置 🌼</span>
-        <span data-lang="ko">감사합니다. 자리를 확보해 두겠습니다 🌼</span>
+      <div class="mock-input" aria-hidden="true">
+        <span class="ph">今の状況を話してみましょう</span>
+        <span class="pill">語り口 メンター</span>
+        <span class="pill">モード 整理</span>
+        <span class="send">↑</span>
       </div>
-      <p class="form-note">
-        <span data-lang="ja">公開のお知らせをメールでお届けします</span>
-        <span data-lang="en">We'll notify you when we launch</span>
-        <span data-lang="zh">发布时我们会通过邮件通知您</span>
-        <span data-lang="ko">출시 시 이메일로 알려드립니다</span>
-      </p>
+    </div>
+    <p class="sr">悩みを入力すると、同じ経験をした人の生の経験談が返ってくるチャット形式の画面のイメージです。</p>
+    <p class="mock-cap rv">※ 開発中の画面イメージです。</p>
+
+    <div class="body-text">
+      <p class="rv">企業ごとの選考情報は、既存のサイトで足ります。でも「面接の空気感」「自己分析のやり方」「最後の決め方」は、<span class="mk">経験でしか埋まりません</span>。その材料が、あなたの話です。</p>
     </div>
   </div>
 </section>
 
-<!-- STEPS -->
-<section class="steps-section">
-  <div class="steps-header">
-    <span class="section-label">How it works</span>
-    <h2 class="steps-title">
-      <span data-lang="ja">たった一つのボタンが、<br><strong>あなたを誰かに繋げる。</strong></span>
-      <span data-lang="en">One button connects you<br><strong>to someone who understands.</strong></span>
-      <span data-lang="zh">只需一个按钮，<br><strong>就能连接到理解你的人。</strong></span>
-      <span data-lang="ko">하나의 버튼이<br><strong>당신을 누군가와 연결합니다.</strong></span>
-    </h2>
-  </div>
+<!-- ============ 3. お願いすること ============ -->
+<section>
+  <div class="wrap">
+    <p class="label rv">お願いすること</p>
+    <h2 class="rv">就活の入口から、内定を決めた日まで。順番に聞かせてください。</h2>
+    <div class="body-text">
+      <p class="rv">アンケートではなく、その場で掘り下げていく対話形式です。私が直接お伺いします。</p>
+    </div>
 
-  <div class="step">
-    <div class="step-text">
-      <span class="step-num">STEP 01</span>
-      <h3 class="step-headline">
-        <span data-lang="ja">Come onを押すだけ。<br><strong>理由は言わなくていい。</strong></span>
-        <span data-lang="en">Just press Come on.<br><strong>No explanation needed.</strong></span>
-        <span data-lang="zh">只需按下 Come on。<br><strong>不需要任何解释。</strong></span>
-        <span data-lang="ko">Come on만 누르면 됩니다.<br><strong>이유는 말 안 해도 돼요.</strong></span>
-      </h3>
-      <p class="step-body">
-        <span data-lang="ja">夜中でも、泣いていても、言葉が出なくても。ただ押すだけで、何かが動き始める。</span>
-        <span data-lang="en">Even at 3am, even when you can't find words. Just press, and something begins to move.</span>
-        <span data-lang="zh">即使在深夜，即使泪流满面，即使说不出话。只需按下，一切就开始了。</span>
-        <span data-lang="ko">새벽이라도, 눈물이 나도, 말이 안 나와도. 그냥 누르면, 뭔가 시작됩니다.</span>
-      </p>
-    </div>
-    <div class="phone-frame">
-      <div class="phone-notch"></div>
-      <div class="phone-screen"><img src="assets/screen1.png" alt="DaiMe Come on screen" /></div>
-    </div>
-  </div>
+    <div class="flow rv">
+      <p class="phase">PREP</p>
+      <div class="step"><div class="no">01</div><div><h3>自己分析</h3><p>いつ、何をきっかけに始めたか。どう言葉にしていったか。</p></div></div>
 
-  <div class="step reverse">
-    <div class="step-text">
-      <span class="step-num">STEP 02</span>
-      <h3 class="step-headline">
-        <span data-lang="ja">近くにいる、<br><strong>同じ経験者が現れる。</strong></span>
-        <span data-lang="en">Someone nearby<br><strong>who's lived the same thing appears.</strong></span>
-        <span data-lang="zh">附近有过<br><strong>同样经历的人出现了。</strong></span>
-        <span data-lang="ko">근처에 있는<br><strong>같은 경험자가 나타납니다.</strong></span>
-      </h3>
-      <p class="step-body">
-        <span data-lang="ja">プロじゃない。AIじゃない。将来の不安、仕事の悩み、人間関係の疲れ——同じ場所にいた人が来る。</span>
-        <span data-lang="en">Not a professional. Not an AI. Someone who's been through the same anxiety, work stress, relationship exhaustion.</span>
-        <span data-lang="zh">不是专业人士，不是AI。曾经历过同样的未来焦虑、工作烦恼、人际关系疲惫的人来了。</span>
-        <span data-lang="ko">전문가도, AI도 아닙니다. 미래 불안, 직장 고민, 인간관계 피로—같은 곳에 있었던 사람이 옵니다.</span>
-      </p>
+      <p class="phase">INTERNSHIP — 選考</p>
+      <div class="step"><div class="no">02</div><div><h3>ES作成（インターン選考）</h3><p>何を書き、何を書かなかったか。</p></div></div>
+      <div class="step"><div class="no">03</div><div><h3>GD選考（インターン選考）</h3><p>実際にその場で何が起きたか。</p></div></div>
+      <div class="step"><div class="no">04</div><div><h3>面接選考（インターン選考）</h3><p>準備したこと、空気感、想定外だったこと。</p></div></div>
+
+      <p class="phase">INTERNSHIP — 参加</p>
+      <div class="step"><div class="no">05</div><div><h3>インターン参加</h3><p>参加して何が変わったか。志望が動いた理由。</p></div></div>
+
+      <p class="phase">MAIN SELECTION</p>
+      <div class="step"><div class="no">06</div><div><h3>ES作成（本選考）</h3><p>インターンのときから何が変わったか。</p></div></div>
+      <div class="step"><div class="no">07</div><div><h3>GD・面接（本選考）</h3><p>通った選考と落ちた選考、その差をどう見ているか。</p></div></div>
+
+      <p class="phase">DECISION</p>
+      <div class="step"><div class="no">08</div><div><h3>内定後の意思決定</h3><p>最後、何を基準に決めたか。決め手になったもの。</p></div></div>
     </div>
-    <div class="phone-frame">
-      <div class="phone-notch"></div>
-      <div class="phone-screen"><img src="assets/screen2.png" alt="DaiMe Come on screen" /></div>
+
+    <p class="tail rv">全8段階・質問はおよそ60個。1〜2時間かかる可能性があります。日程は分けても構いません。</p>
+  </div>
+</section>
+
+<!-- ============ 4. 最後に ============ -->
+<section class="last">
+  <div class="wrap">
+    <p class="label rv">最後に</p>
+    <div class="body-text">
+      <p class="rv">あなたが悩みながら進んだ時間は、同じ場所で止まっている誰かが前を向くきっかけになります。</p>
+      <p class="rv">その話を、聞かせてほしいです。</p>
     </div>
   </div>
 </section>
 
-<!-- WHAT -->
-<section class="what-section">
-  <span class="section-label">What is DaiMe?</span>
-  <h2 class="what-headline">
-    <span data-lang="ja">プロじゃない。AIじゃない。<br><strong>同じ痛みを越えた、生身の人間</strong>が来る。</span>
-    <span data-lang="en">Not a professional. Not an AI.<br><strong>A real person who survived the same pain.</strong></span>
-    <span data-lang="zh">不是专业人士，不是AI。<br><strong>是走过同样痛苦的真实的人。</strong></span>
-    <span data-lang="ko">전문가도, AI도 아닙니다.<br><strong>같은 아픔을 이겨낸 진짜 사람이 옵니다.</strong></span>
-  </h2>
-  <div class="cards-grid">
-    <div class="card">
-      <span class="card-icon">🆘</span>
-      <p class="card-title"><span data-lang="ja">Come onを押すだけ</span><span data-lang="en">Just press Come on</span><span data-lang="zh">只需按下 Come on</span><span data-lang="ko">Come on만 누르면 돼요</span></p>
-      <p class="card-body"><span data-lang="ja">夜中でも、一言でも。押したその瞬間から動き始める。</span><span data-lang="en">Anytime. It starts the moment you press.</span><span data-lang="zh">深夜也好。按下的那一刻就开始了。</span><span data-lang="ko">밤중에도. 누른 순간 시작됩니다.</span></p>
-    </div>
-    <div class="card">
-      <span class="card-icon">🤝</span>
-      <p class="card-title"><span data-lang="ja">経験者が届く</span><span data-lang="en">Someone who's been there</span><span data-lang="zh">有经验的人来找你</span><span data-lang="ko">경험자가 찾아옵니다</span></p>
-      <p class="card-body"><span data-lang="ja">資格じゃなく、同じ闇を先に越えた人間が来る。</span><span data-lang="en">Not a certificate — someone who crossed the same darkness.</span><span data-lang="zh">不是资质，而是先走过同样黑暗的人。</span><span data-lang="ko">자격증이 아닌, 같은 어둠을 먼저 건넌 사람.</span></p>
-    </div>
-    <div class="card">
-      <span class="card-icon">🌼</span>
-      <p class="card-title"><span data-lang="ja">黒歴史が資産になる</span><span data-lang="en">Your past becomes an asset</span><span data-lang="zh">黑历史成为资产</span><span data-lang="ko">흑역사가 자산이 됩니다</span></p>
-      <p class="card-body"><span data-lang="ja">あなたの痛みは、誰かの道標になる。</span><span data-lang="en">Your pain becomes someone else's guide.</span><span data-lang="zh">你的痛苦，成为他人的路标。</span><span data-lang="ko">당신의 아픔이 누군가의 이정표가 됩니다.</span></p>
-    </div>
-  </div>
-</section>
-
-<!-- VISION -->
-<section class="vision-section">
-  <p class="vision-text">
-    <span data-lang="ja"><em>「裸で踊れる世界を創る」</em><br><br>弱さをさらけ出せる場所が、<br>まだ足りていない。</span>
-    <span data-lang="en"><em>"Create a world where you can be fully yourself."</em><br><br>There aren't enough places<br>where vulnerability is welcome.</span>
-    <span data-lang="zh"><em>「创造一个可以真实做自己的世界」</em><br><br>能够展示脆弱的地方，<br>还远远不够。</span>
-    <span data-lang="ko"><em>"온전히 자신일 수 있는 세상을 만든다"</em><br><br>약함을 드러낼 수 있는 공간이<br>아직 부족합니다.</span>
-  </p>
-</section>
-
-<!-- FOOTER CTA -->
-<section class="footer-cta">
-  <h2>
-    <span data-lang="ja">今夜しんどいあなたに、<br>一番に届けたい。</span>
-    <span data-lang="en">We want to reach you first,<br>on your hardest nights.</span>
-    <span data-lang="zh">我们想在你最难熬的夜晚，第一个找到你。</span>
-    <span data-lang="ko">가장 힘든 밤, 당신에게 가장 먼저 닿고 싶습니다.</span>
-  </h2>
-  <div class="form-wrap-s">
-    <div class="free-tag">🌼
-      <span data-lang="ja">完全無料・クレジットカード不要</span>
-      <span data-lang="en">Completely free · No credit card</span>
-      <span data-lang="zh">完全免费 · 无需信用卡</span>
-      <span data-lang="ko">완전 무료 · 신용카드 불필요</span>
-    </div>
-    <div class="form-row" id="formRow2">
-      <input type="email" class="email-input" id="emailInput2" placeholder="your@email.com" />
-      <button class="cta-btn" onclick="submitEmail('emailInput2','formRow2','success2','error2')">
-        <span data-lang="ja">参加する</span><span data-lang="en">Join</span><span data-lang="zh">加入</span><span data-lang="ko">참가</span>
-      </button>
-    </div>
-    <p class="error-msg" id="error2">
-      <span data-lang="ja">メールアドレスを入力してください</span>
-      <span data-lang="en">Please enter a valid email</span>
-      <span data-lang="zh">请输入有效的邮箱地址</span>
-      <span data-lang="ko">이메일 주소를 입력해 주세요</span>
-    </p>
-    <div class="success-msg" id="success2">
-      <span data-lang="ja">ありがとう。あなたの席を取っておきます 🌼</span>
-      <span data-lang="en">Thank you. We'll save your spot 🌼</span>
-      <span data-lang="zh">谢谢你。我们为你保留了一个位置 🌼</span>
-      <span data-lang="ko">감사합니다. 자리를 확보해 두겠습니다 🌼</span>
-    </div>
-  </div>
-</section>
-
-<footer>© 2025 DaiMe — Daisy × Me</footer>
+<footer></footer>
 
 <script>
-function setLang(lang, btn) {
-  document.body.className = 'lang-' + lang;
-  document.documentElement.lang = lang;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var targets = document.querySelectorAll('.rv, .mk');
+  if('IntersectionObserver' in window && !reduce){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    },{threshold:.15, rootMargin:'0px 0px -8% 0px'});
+    targets.forEach(function(t){ io.observe(t); });
+  } else {
+    targets.forEach(function(t){ t.classList.add('in'); });
+  }
+
+  var scenes = [
+    {
+      q:'面接の空気感が全然わからなくて、何を準備すればいいのか掴めないです',
+      initial:'K',
+      who:'Kさん（24卒・メーカー志望）',
+      a:'私も1社目の直前まで同じでした。実際に受けてみると想像していた圧迫感はほとんどなくて、「一緒に働く人を見に来ている」という場でした。だから練習したのは回答の暗記ではなく、深掘りされたときに黙らないことです。',
+      chips:['面接 12社','ガクチカは1本に絞った','逆質問は毎回3つ用意']
+    },
+    {
+      q:'自己分析、何から手をつければいいのか分かりません',
+      initial:'M',
+      who:'Mさん（25卒・人材志望）',
+      a:'最初は過去のエピソードを紙に書き出しました。ただ正直それだけでは言葉が浅いままで。友達に「なんでそう思ったの」と5回聞いてもらう時間をつくって、やっと自分の言葉になった感覚があります。',
+      chips:['ES 30社提出','自己分析に約2ヶ月','ノート3冊']
+    }
+  ];
+
+  var qEl=document.getElementById('q'), aEl=document.getElementById('a'),
+      aWrap=document.getElementById('aWrap'), chipsEl=document.getElementById('chips'),
+      whoEl=document.getElementById('who'), avEl=document.getElementById('avatar'),
+      mock=document.getElementById('mock');
+  var timers=[], idx=0, running=false;
+
+  function clearTimers(){ timers.forEach(clearTimeout); timers=[]; }
+  function later(fn,ms){ timers.push(setTimeout(fn,ms)); }
+
+  function renderStatic(s){
+    qEl.textContent=s.q; qEl.classList.add('show');
+    avEl.textContent=s.initial; whoEl.textContent=s.who;
+    aEl.textContent=s.a; aWrap.classList.add('show');
+    chipsEl.innerHTML='';
+    s.chips.forEach(function(c){
+      var d=document.createElement('span'); d.className='chip show'; d.textContent=c; chipsEl.appendChild(d);
+    });
+  }
+
+  function play(){
+    var s=scenes[idx];
+    clearTimers();
+    qEl.classList.remove('show'); aWrap.classList.remove('show');
+    aEl.innerHTML=''; chipsEl.innerHTML='';
+
+    later(function(){
+      qEl.textContent=s.q; qEl.classList.add('show');
+    },300);
+
+    later(function(){
+      avEl.textContent=s.initial; whoEl.textContent=s.who;
+      aEl.innerHTML='<span class="dots"><i></i><i></i><i></i></span>';
+      aWrap.classList.add('show');
+    },1100);
+
+    later(function(){
+      aEl.innerHTML='<span id="typed"></span><span class="caret" id="caret"></span>';
+      var typed=document.getElementById('typed'), caret=document.getElementById('caret'), i=0;
+      (function type(){
+        if(i<=s.a.length){
+          typed.textContent=s.a.slice(0,i);
+          i++;
+          timers.push(setTimeout(type, 26));
+        }else{
+          caret.classList.add('off');
+          s.chips.forEach(function(c,n){
+            var d=document.createElement('span'); d.className='chip'; d.textContent=c;
+            chipsEl.appendChild(d);
+            later(function(){ d.classList.add('show'); }, 120*n);
+          });
+          later(function(){ idx=(idx+1)%scenes.length; play(); }, 4600);
+        }
+      })();
+    },2300);
+  }
+
+  if(reduce){
+    renderStatic(scenes[0]);
+  } else if('IntersectionObserver' in window){
+    var mio=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting && !running){ running=true; play(); }
+        else if(!e.isIntersecting && running){ running=false; clearTimers(); }
+      });
+    },{threshold:.35});
+    mio.observe(mock);
+  } else { play(); }
+})();
 </script>
 </body>
 </html>
